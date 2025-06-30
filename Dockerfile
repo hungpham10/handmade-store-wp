@@ -15,12 +15,12 @@ RUN apt-get update && apt-get install -y 										\
     ca-certificates 													\
     nginx 														\
     curl 														\
-    unzip 														\
     screen 														\
     supervisor 	 													\
     gettext-base													\
     && docker-php-ext-configure gd --with-freetype --with-jpeg 								\
-    && docker-php-ext-install gd pdo pdo_mysql zip mysqli
+    && docker-php-ext-install gd pdo pdo_mysql zip mysqli 								\
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup Wordpress
 RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz 				\
