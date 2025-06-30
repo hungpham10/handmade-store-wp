@@ -1,0 +1,1 @@
+# handmade-store-wp
