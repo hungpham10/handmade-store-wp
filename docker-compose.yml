@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: handmade-store-wp:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        WORDPRESS_VERSION: 6.8.1 
+        WOOCOMMERCE_VERSION: 9.9.5
+    ports:
+      - "8080:8080"  
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=wp_user
+      - MYSQL_PASSWORD=wp_password
+      - MYSQL_DATABASE=wp_tenant_1
+    depends_on:
+      - mysql
+    networks:
+      - wp-network
+
+  mysql:
+    image: mariadb:10.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=wp_tenant_1
+      - MYSQL_USER=wp_user
+      - MYSQL_PASSWORD=wp_password
+    ports:
+      - "3306:3306"  # Expose MySQL port to the host
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - wp-network
+
+volumes:
+  wordpress_data:
+  mysql_data:
+
+networks:
+  wp-network:
+    driver: bridge
