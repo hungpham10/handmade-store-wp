@@ -60,10 +60,12 @@ function localtonet() {
 function boot() {
   local cmd=$1
 
+  sed -i "s/%%HTTP_SERVER%%/$MYSQL_DATABASE/g" /etc/nginx/conf.d/wordpress.conf
+
   sed -i "s/%%DB_NAME%%/$MYSQL_DATABASE/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_USER%%/$MYSQL_USER/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_PASSWORD%%/$MYSQL_PASSWORD/g" /var/www/html/wp-config.php
-  sed -i "s|%%DB_HOST%%|$MYSQL_HOST:${MYSQL_PORT:-3306}|g" /var/www/html/wp-config.php
+  sed -i "s/%%DB_HOST%%/$MYSQL_HOST:${MYSQL_PORT:-3306}/g" /var/www/html/wp-config.php
   sed -i "s/%%AUTH_KEY%%/$AUTH_KEY/g" /var/www/html/wp-config.php
   sed -i "s/%%SECURE_AUTH_KEY%%/$SECURE_AUTH_KEY/g" /var/www/html/wp-config.php
   sed -i "s/%%LOGGED_IN_KEY%%/$LOGGED_IN_KEY/g" /var/www/html/wp-config.php
