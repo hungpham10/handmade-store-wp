@@ -1,31 +1,81 @@
-name: Build and Push Docker image
+
+name: Build and Push Docker Image
 
 on:
   push:
     tags:
-      - 'v*.*.*'       # Matches tags like v1.0.0, v2.3.4
-      - 'v*.*.*-qc'    # Matches tags like v1.0.0-qc, v2.3.4-qc
-      - 'v*.*.*-uat'   # Matches tags like v1.0.0-uat, v2.3.4-uat
+      - 'v*.*.*'       # Matches tags like v1.0.0
+      - 'v*.*.*-qc'    # Matches tags like v1.0.0-qc
+      - 'v*.*.*-uat'   # Matches tags like v1.0.0-uat
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  build_docker_image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-22.04
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY: ghcr.io
+      USERNAME: ${{ github.actor }}
+      PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      IMAGE_NAME: ${{ github.repository }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.7.1
+        with:
+          install: true
+          driver-opts: |
+            image=moby/buildkit:v0.12  # Use a stable Buildkit version
 
-    - name: Build Docker image
-      run: |
-        docker build -t ghcr.io/${{ github.repository }}/my-image:latest .
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.USERNAME }}
+          password: ${{ env.PASSWORD }}
 
-    - name: Push Docker image
-      run: |
-        docker push ghcr.io/${{ github.repository }}/my-image:latest
+      - name: Check Dockerfile existence
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Error: Dockerfile not found in repository root"
+            exit 1
+          fi
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./Dockerfile
+          failure-threshold: error  # Fail on errors only
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}} # e.g., v1.0.0
+            type=semver,pattern={{major}}.{{minor}} # e.g., 1.0
+            type=raw,value=latest,enable=${{ !contains(github.ref_name, '-qc') && !contains(github.ref_name, '-uat') }} # Only tag 'latest' for non-suffixed tags
+            type=raw,value=${{ github.ref_name }} # Preserve exact tag (e.g., v1.0.0-qc)
+          labels: |
+            org.opencontainers.image.title=Vietnamese Stock Data Mining
+            org.opencontainers.image.description=Mining and analyzing Vietnamese stock data
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+            org.opencontainers.image.version=${{ github.ref_name }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6.9.0
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ github.workflow }}-${{ github.job }}
+          cache-to: type=gha,mode=max,scope=${{ github.workflow }}-${{ github.job }}
