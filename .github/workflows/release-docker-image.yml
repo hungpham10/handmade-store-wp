@@ -3,9 +3,9 @@ name: Build and Push Docker image
 on:
   push:
     tags:
-      - 'v[0-9.]+$'
-      - 'v[0-9.]+-qc$'
-      - 'v[0-9.]+-uat$'
+      - 'v*.*.*'       # Matches tags like v1.0.0, v2.3.4
+      - 'v*.*.*-qc'    # Matches tags like v1.0.0-qc, v2.3.4-qc
+      - 'v*.*.*-uat'   # Matches tags like v1.0.0-uat, v2.3.4-uat
 
 jobs:
   build:
