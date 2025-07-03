@@ -36,12 +36,14 @@ RUN curl -o /tmp/woocommerce.zip -SL https://downloads.wordpress.org/plugin/wooc
 
 # Create supervisor configuration directory
 RUN mkdir -p /etc/supervisor/conf.d
+RUN rm -fr /usr/local/etc/php-fpm.d/*
 RUN which /usr/bin/supervisord
 
 # Copy supervisor configuration files
 COPY sql/*.sql /app/sql/
 COPY conf/nginx/*.conf /etc/nginx/conf.d/
 COPY conf/php/*.ini /usr/local/etc/php/
+COPY conf/php/*.conf /usr/local/etc/php-fpm.d/
 COPY conf/supervisor/*.conf /etc/supervisor/
 COPY conf/wordpress/*.php /var/www/html/
 COPY scripts/release.sh /app/endpoint.sh
