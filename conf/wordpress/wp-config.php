@@ -1,4 +1,13 @@
 <?php
+
+define('WP_HOME', '%%WP_HOME%%');
+define('WP_SITEURL', '%%WP_SITEURL%%');
+define('FORCE_SSL_ADMIN', true);
+
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+
 define('DB_NAME', '%%DB_NAME%%');
 define('DB_USER', '%%DB_USER%%');
 define('DB_PASSWORD', '%%DB_PASSWORD%%');
@@ -23,4 +32,3 @@ if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');
 
 require_once(ABSPATH . 'wp-settings.php');
-

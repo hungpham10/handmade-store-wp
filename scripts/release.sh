@@ -60,7 +60,9 @@ function localtonet() {
 function boot() {
   local cmd=$1
 
-  sed -i "s/%%HTTP_SERVER%%/$MYSQL_DATABASE/g" /etc/nginx/conf.d/wordpress.conf
+  sed -i "s/%%HTTP_SERVER%%/$HTTP_SERVER/g" /etc/nginx/conf.d/wordpress.conf
+  sed -i "s/%%WP_HOME%%/${HTTP_PROTOCOL}://${HTTP_SERVER}/g" /var/www/html/wp-config.php
+  sed -i "s/%%WP_SITE%%/${HTTP_PROTOCOL}://${HTTP_SERVER}/g" /var/www/html/wp-config.php
 
   sed -i "s/%%DB_NAME%%/$MYSQL_DATABASE/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_USER%%/$MYSQL_USER/g" /var/www/html/wp-config.php
