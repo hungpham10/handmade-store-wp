@@ -21,7 +21,7 @@ function prepare() {
   fi
 
   for i in {0..30}; do
-    if mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" --silent; then
+    if mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "${MYSQL_PORT:-3306}" --password="$MYSQL_PASSWORD" --silent; then
       break
     else
       echo "Waiting for MySQL to be ready..."
@@ -29,15 +29,15 @@ function prepare() {
     fi
   done
 
-  if ! mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" --silent; then
+  if ! mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "${MYSQL_PORT:-3306}" --password="$MYSQL_PASSWORD" --silent; then
     echo "Error: MySQL is not ready" >&2
-    mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD"
+    mysqladmin ping -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "${MYSQL_PORT:-3306}" --password="$MYSQL_PASSWORD"
     exit 1
   fi
 
   for script_path in "$1"/*; do
     if [ -f "$script_path" ]; then
-      if ! mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$script_path"; then
+      if ! mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "${MYSQL_PORT:-3306}" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$script_path"; then
         echo "Error: Failed to execute $script_path" >&2
         exit 1
       fi
@@ -63,7 +63,7 @@ function boot() {
   sed -i "s/%%DB_NAME%%/$MYSQL_DATABASE/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_USER%%/$MYSQL_USER/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_PASSWORD%%/$MYSQL_PASSWORD/g" /var/www/html/wp-config.php
-  sed -i "s/%%DB_HOST%%/$MYSQL_HOST/g" /var/www/html/wp-config.php
+  sed -i "s|%%DB_HOST%%|$MYSQL_HOST:${MYSQL_PORT:-3306}|g" /var/www/html/wp-config.php
   sed -i "s/%%AUTH_KEY%%/$AUTH_KEY/g" /var/www/html/wp-config.php
   sed -i "s/%%SECURE_AUTH_KEY%%/$SECURE_AUTH_KEY/g" /var/www/html/wp-config.php
   sed -i "s/%%LOGGED_IN_KEY%%/$LOGGED_IN_KEY/g" /var/www/html/wp-config.php
