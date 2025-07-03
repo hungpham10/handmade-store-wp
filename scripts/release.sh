@@ -64,6 +64,14 @@ function boot() {
   sed -i "s/%%DB_USER%%/$MYSQL_USER/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_PASSWORD%%/$MYSQL_PASSWORD/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_HOST%%/$MYSQL_HOST/g" /var/www/html/wp-config.php
+  sed -i "s/%%AUTH_KEY%%/$AUTH_KEY/g" /var/www/html/wp-config.php
+  sed -i "s/%%SECURE_AUTH_KEY%%/$SECURE_AUTH_KEY/g" /var/www/html/wp-config.php
+  sed -i "s/%%LOGGED_IN_KEY%%/$LOGGED_IN_KEY/g" /var/www/html/wp-config.php
+  sed -i "s/%%NONCE_KEY%%/$NONCE_KEY/g" /var/www/html/wp-config.php
+  sed -i "s/%%AUTH_SALT%%/$AUTH_SALT/g" /var/www/html/wp-config.php
+  sed -i "s/%%SECURE_AUTH_SALT%%/SECURE_AUTH_SALT/g" /var/www/html/wp-config.php
+  sed -i "s/%%LOGGED_IN_SALT%%/$LOGGED_IN_SALT/g" /var/www/html/wp-config.php
+  sed -i "s/%%NONCE_SALT%%/$NONCE_SALT/g" /var/www/html/wp-config.php
   shift
   exec "$cmd" "$@"
 }
