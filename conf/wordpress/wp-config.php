@@ -21,6 +21,7 @@ define('WP_REDIS_SCHEME', 'tcp');
 define('WP_REDIS_HOST', '%%REDIS_HOST%%');
 define('WP_REDIS_PORT', %%REDIS_PORT%%);
 define('WP_REDIS_CLIENT', 'pecl');
+define('WP_REDIS_PASSWORD', '%%REDIS_PASSWORD');
 define('WP_REDIS_TIMEOUT', %%REDIS_TIMEOUT%%);
 define('WP_REDIS_READ_TIMEOUT', %%REDIS_TIMEOUT%%);
 define('WP_REDIS_MAXTTL', %%REDIS_TTL%%);

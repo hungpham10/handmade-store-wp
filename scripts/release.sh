@@ -76,6 +76,7 @@ function boot() {
   fi
   sed -i "s/%%REDIS_HOST%%/$REDIS_HOST/g"  /var/www/html/wp-config.php
   sed -i "s/%%REDIS_PORT%%/$REDIS_PORT/g"  /var/www/html/wp-config.php
+  sed -i "s/%%REDIS_PASSWORD%%/$REDIS_PASSWORD/g"  /var/www/html/wp-config.php
   sed -i "s/%%REDIS_TTL%%/${REDIS_TTL:-300}/g" /var/www/html/wp-config.php
   sed -i "s/%%REDIS_TIMEOUT%%/${REDIS_TIMEOUT:-30}/g" /var/www/html/wp-config.php
   sed -i "s/%%HTTP_SERVER%%/$HTTP_SERVER/g" /etc/nginx/conf.d/wordpress.conf
