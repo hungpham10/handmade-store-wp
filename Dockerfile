@@ -2,7 +2,7 @@ FROM php:8.1-fpm
 
 WORKDIR /app
 
-ARG WORDPRESS_VERSION=6.6.2
+ARG WORDPRESS_VERSION=6.8.1
 ARG WOOCOMMERCE_VERSION=9.9.5
 
 RUN apt-get update && apt-get install -y 										\
