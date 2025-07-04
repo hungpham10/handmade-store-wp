@@ -5,7 +5,9 @@ define('WP_SITEURL', '%%WP_SITEURL%%');
 define('FORCE_SSL_ADMIN', %%FORCE_SSL_ADMIN%%);
 
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['REQUEST_SCHEME'] = "https";
     $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = %%HTTP_PORT%%;
 }
 
 define('DB_NAME', '%%DB_NAME%%');
@@ -26,9 +28,13 @@ define('NONCE_SALT', '%%NONCE_SALT%%');
 
 $table_prefix = 'wp_';
 
-define('WP_DEBUG', false);
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);
 
 if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');
 
 require_once(ABSPATH . 'wp-settings.php');
+
+remove_action('template_redirect', 'redirect_canonical');

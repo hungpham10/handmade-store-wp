@@ -60,6 +60,10 @@ function localtonet() {
 function boot() {
   local cmd=$1
 
+  if ! echo "${ENABLE_REMOVING_REDIRECT_CANNONICAL}" | grep "true" &> /dev/null; then
+    sed -i "/redirect_canonical/d" /var/www/html/wp-config.php
+  fi
+
   if [ "${HTTP_PROTOCOL}" = "https" ]; then
     sed -i "s/%%FORCE_SSL_ADMIN%%/true/g" /var/www/html/wp-config.php
     sed -i "s/%%FORCE_SSL%%/on/g" /etc/nginx/conf.d/wordpress.conf
@@ -67,9 +71,11 @@ function boot() {
     sed -i "s/%%FORCE_SSL_ADMIN%%/false/g" /var/www/html/wp-config.php
     sed -i '/HTTPS/d' /etc/nginx/conf.d/wordpress.conf
     sed -i '/HTTP_X_FORWARDED_PROTO/d' /etc/nginx/conf.d/wordpress.conf
+    sed -i '/HTTP_X_FORWARDED_PORT/d' /etc/nginx/conf.d/wordpress.conf
     HTTP_PROTOCOL="http"
   fi
   sed -i "s/%%HTTP_SERVER%%/$HTTP_SERVER/g" /etc/nginx/conf.d/wordpress.conf
+  sed -i "s/%%HTTP_PORT%%/$HTTP_PORT/g" /var/www/html/wp-config.php
   sed -i "s/%%WP_HOME%%/${HTTP_PROTOCOL}:\/\/${HTTP_SERVER}:${HTTP_PORT}/g" /var/www/html/wp-config.php
   sed -i "s/%%WP_SITEURL%%/${HTTP_PROTOCOL}:\/\/${HTTP_SERVER}:${HTTP_PORT}/g" /var/www/html/wp-config.php
 
