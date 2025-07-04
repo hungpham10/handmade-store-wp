@@ -2,7 +2,7 @@
 
 define('WP_HOME', '%%WP_HOME%%');
 define('WP_SITEURL', '%%WP_SITEURL%%');
-define('FORCE_SSL_ADMIN', true);
+define('FORCE_SSL_ADMIN', %%FORCE_SSL_ADMIN%%);
 
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
     $_SERVER['HTTPS'] = 'on';

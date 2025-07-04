@@ -60,9 +60,18 @@ function localtonet() {
 function boot() {
   local cmd=$1
 
+  if [ "${HTTP_PROTOCOL}" = "https" ]; then
+    sed -i "s/%%FORCE_SSL_ADMIN%%/true/g" /var/www/html/wp-config.php
+    sed -i "s/%%FORCE_SSL%%/on/g" /etc/nginx/conf.d/wordpress.conf
+  else
+    sed -i "s/%%FORCE_SSL_ADMIN%%/false/g" /var/www/html/wp-config.php
+    sed -i '/HTTPS/d' /etc/nginx/conf.d/wordpress.conf
+    sed -i '/HTTP_X_FORWARDED_PROTO/d' /etc/nginx/conf.d/wordpress.conf
+    HTTP_PROTOCOL="http"
+  fi
   sed -i "s/%%HTTP_SERVER%%/$HTTP_SERVER/g" /etc/nginx/conf.d/wordpress.conf
-  sed -i "s/%%WP_HOME%%/${HTTP_PROTOCOL}://${HTTP_SERVER}/g" /var/www/html/wp-config.php
-  sed -i "s/%%WP_SITE%%/${HTTP_PROTOCOL}://${HTTP_SERVER}/g" /var/www/html/wp-config.php
+  sed -i "s/%%WP_HOME%%/${HTTP_PROTOCOL}:\/\/${HTTP_SERVER}:${HTTP_PORT}/g" /var/www/html/wp-config.php
+  sed -i "s/%%WP_SITEURL%%/${HTTP_PROTOCOL}:\/\/${HTTP_SERVER}:${HTTP_PORT}/g" /var/www/html/wp-config.php
 
   sed -i "s/%%DB_NAME%%/$MYSQL_DATABASE/g" /var/www/html/wp-config.php
   sed -i "s/%%DB_USER%%/$MYSQL_USER/g" /var/www/html/wp-config.php
