@@ -17,6 +17,16 @@ define('DB_HOST', '%%DB_HOST%%');
 define('DB_CHARSET', 'utf8mb4');
 define('DB_COLLATE', '');
 
+define('WP_REDIS_SCHEME', 'tcp');
+define('WP_REDIS_HOST', '%%REDIS_HOST%%');
+define('WP_REDIS_PORT', %%REDIS_PORT%%);
+define('WP_REDIS_CLIENT', 'pecl');
+define('WP_REDIS_TIMEOUT', %%REDIS_TIMEOUT%%);
+define('WP_REDIS_READ_TIMEOUT', %%REDIS_TIMEOUT%%);
+define('WP_REDIS_MAXTTL', %%REDIS_TTL%%);
+define('WP_REDIS_SELECTIVE_FLUSH', true);
+define('WP_CACHE', true);
+
 define('AUTH_KEY', '%%AUTH_KEY%%');
 define('SECURE_AUTH_KEY', '%%SECURE_AUTH_KEY%%');
 define('LOGGED_IN_KEY', '%%LOGGED_IN_KEY%%');
