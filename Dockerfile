@@ -3,9 +3,8 @@ FROM php:8.1-fpm
 WORKDIR /app
 
 ARG WORDPRESS_VERSION=6.8.1
-ARG REDIS_CACHE_VERSION=2.5.4
+ARG CACHE_VERSION=7.2
 ARG WOOCOMMERCE_VERSION=9.9.5
-
 ARG ASTRA_VERSION=4.11.5
 
 RUN apt-get update && apt-get install -y 										\
@@ -39,11 +38,11 @@ RUN curl -o /tmp/woocommerce.zip -SL https://downloads.wordpress.org/plugin/wooc
     && rm /tmp/woocommerce.zip 												\
     && chown -R www-data:www-data /var/www/html/wp-content/plugins/woocommerce
 
-# Setup Redis Object Cache
-RUN curl -o /tmp/redis-cache.zip -SL https://downloads.wordpress.org/plugin/redis-cache.${REDIS_CACHE_VERSION}.zip 	\
-    && unzip /tmp/redis-cache.zip -d /var/www/html/wp-content/plugins/ 							\
-    && rm /tmp/redis-cache.zip 												\
-    && chown -R www-data:www-data /var/www/html/wp-content/plugins/redis-cache
+# Setup LiteSpeed Cache Plugin
+RUN curl -o /tmp/litespeed-cache.zip -SL https://downloads.wordpress.org/plugin/litespeed-cache.${CACHE_VERSION}.zip 	\
+    && unzip /tmp/litespeed-cache.zip -d /var/www/html/wp-content/plugins/ \
+    && rm /tmp/litespeed-cache.zip \
+    && chown -R www-data:www-data /var/www/html/wp-content/plugins/litespeed-cache
 
 # Setup Astra Theme
 RUN curl -o /tmp/astra.zip -SL https://downloads.wordpress.org/theme/astra.${ASTRA_VERSION}.zip 			\
