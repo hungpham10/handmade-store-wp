@@ -21,7 +21,7 @@ define('WP_REDIS_SCHEME', 'tcp');
 define('WP_REDIS_HOST', '%%REDIS_HOST%%');
 define('WP_REDIS_PORT', %%REDIS_PORT%%);
 define('WP_REDIS_CLIENT', 'pecl');
-define('WP_REDIS_PASSWORD', '%%REDIS_PASSWORD');
+define('WP_REDIS_PASSWORD', '%%REDIS_PASSWORD%%');
 define('WP_REDIS_TIMEOUT', %%REDIS_TIMEOUT%%);
 define('WP_REDIS_READ_TIMEOUT', %%REDIS_TIMEOUT%%);
 define('WP_REDIS_MAXTTL', %%REDIS_TTL%%);
@@ -39,9 +39,13 @@ define('NONCE_SALT', '%%NONCE_SALT%%');
 
 $table_prefix = 'wp_';
 
-define('WP_DEBUG', true);
-define('WP_DEBUG_LOG', true);
-define('WP_DEBUG_DISPLAY', false);
+define( 'WP_DEBUG', true ); // Enable debug mode
+define( 'WP_DEBUG_LOG', 'php://stderr' ); // Send WordPress debug logs to stderr
+define( 'WP_DEBUG_DISPLAY', false ); // Prevent errors from displaying on the site
+@ini_set( 'display_errors', 0 ); // Ensure errors are not displayed
+@ini_set( 'log_errors', 1 ); // Enable PHP error logging
+@ini_set( 'error_log', 'php://stderr' ); // Send all PHP errors to stderr
+@ini_set( 'error_reporting', E_ALL | E_STRICT ); // Log all PHP errors, warnings, and notices
 
 if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');

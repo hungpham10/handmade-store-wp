@@ -19,8 +19,10 @@ RUN apt-get update && apt-get install -y 										\
     screen 														\
     supervisor 	 													\
     gettext-base													\
+    && pecl install redis 												\
     && docker-php-ext-configure gd --with-freetype --with-jpeg 								\
     && docker-php-ext-install gd pdo pdo_mysql zip mysqli 								\
+    && docker-php-ext-enable redis 											\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup Wordpress
