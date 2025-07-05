@@ -6,6 +6,8 @@ ARG WORDPRESS_VERSION=6.8.1
 ARG REDIS_CACHE_VERSION=2.5.4
 ARG WOOCOMMERCE_VERSION=9.9.5
 
+ARG ASTRA_VERSION=4.11.5
+
 RUN apt-get update && apt-get install -y 										\
     libpng-dev 														\
     libjpeg-dev 													\
@@ -42,6 +44,12 @@ RUN curl -o /tmp/redis-cache.zip -SL https://downloads.wordpress.org/plugin/redi
     && unzip /tmp/redis-cache.zip -d /var/www/html/wp-content/plugins/ 							\
     && rm /tmp/redis-cache.zip 												\
     && chown -R www-data:www-data /var/www/html/wp-content/plugins/redis-cache
+
+# Setup Astra Theme
+RUN curl -o /tmp/astra.zip -SL https://downloads.wordpress.org/theme/astra.${ASTRA_VERSION}.zip 			\
+    && unzip /tmp/astra.zip -d /var/www/html/wp-content/themes/ 							\
+    && rm /tmp/astra.zip 												\
+    && chown -R www-data:www-data /var/www/html/wp-content/themes/astra
 
 # Create supervisor configuration directory
 RUN mkdir -p /etc/supervisor/conf.d
