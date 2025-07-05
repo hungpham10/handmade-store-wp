@@ -3,6 +3,7 @@ FROM php:8.1-fpm
 WORKDIR /app
 
 ARG WORDPRESS_VERSION=6.8.1
+ARG REDIS_CACHE_VERSION=2.5.4
 ARG WOOCOMMERCE_VERSION=9.9.5
 
 RUN apt-get update && apt-get install -y 										\
@@ -33,6 +34,12 @@ RUN curl -o /tmp/woocommerce.zip -SL https://downloads.wordpress.org/plugin/wooc
     && unzip /tmp/woocommerce.zip -d /var/www/html/wp-content/plugins/ 							\
     && rm /tmp/woocommerce.zip 												\
     && chown -R www-data:www-data /var/www/html/wp-content/plugins/woocommerce
+
+# Setup Redis Object Cache
+RUN curl -o /tmp/redis-cache.zip -SL https://downloads.wordpress.org/plugin/redis-cache.${REDIS_CACHE_VERSION}.zip 	\
+    && unzip /tmp/redis-cache.zip -d /var/www/html/wp-content/plugins/ 							\
+    && rm /tmp/redis-cache.zip 												\
+    && chown -R www-data:www-data /var/www/html/wp-content/plugins/redis-cache
 
 # Create supervisor configuration directory
 RUN mkdir -p /etc/supervisor/conf.d
